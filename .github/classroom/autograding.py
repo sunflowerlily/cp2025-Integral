@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-GitHub Classroom 自动评分脚本 - 数值微分和积分实验
+GitHub Classroom 自动评分脚本 - 数值积分与物理应用实验
 """
 
 import os
@@ -10,19 +10,22 @@ import subprocess
 import pytest
 from pathlib import Path
 
-# 更新测试配置以匹配数值微分和积分项目结构
+# 更新测试配置以匹配当前5个实验项目
 TESTS = [
-    {"name": "实验一: 函数微分算法比较", 
-     "file": "Exp1-微分算法/tests/test_numerical_differentiation.py", 
+    {"name": "实验一: 德拜热容", 
+     "file": "Exp1-德拜热容/tests/test_debye.py", 
      "points": 10},
-    {"name": "实验二: 核反应速率温度敏感性", 
-     "file": "Exp2-微分应用-核反应速率的温度敏感性/tests/test_rate_sensitivity.py", 
+    {"name": "实验二: 伽马函数积分", 
+     "file": "Exp2-伽马函数/tests/test_gamma_function.py", 
      "points": 10},
-    {"name": "实验三: Simpson法则 vs 梯形法则", 
-     "file": "Exp3-Simpson 法则 vs 梯形法则/tests/test_simpson_integration.py", 
+    {"name": "实验三: 带电圆环电势", 
+     "file": "Exp3-带电圆环/tests/test_ring.py", 
      "points": 10},
-    {"name": "实验四: 数据积分", 
-     "file": "Exp4-数据积分/tests/test_calculate_distance.py", 
+    {"name": "实验四: 亥姆霍兹线圈", 
+     "file": "Exp4-亥姆霍兹线圈/tests/test_helmholtz.py", 
+     "points": 10},
+    {"name": "实验五: 均匀薄片引力", 
+     "file": "Exp5-均匀薄片引力/tests/test_gravity.py", 
      "points": 10}
 ]
 

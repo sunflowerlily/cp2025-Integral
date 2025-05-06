@@ -7,8 +7,8 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # 导入解决方案实现
-#from solution.charged_ring_solution import calculate_potential_on_grid, calculate_electric_field_on_grid
-from charged_ring import calculate_potential_on_grid, calculate_electric_field_on_grid
+from solution.charged_ring_solution import calculate_potential_on_grid, calculate_electric_field_on_grid
+#from charged_ring import calculate_potential_on_grid, calculate_electric_field_on_grid
 
 def test_potential_calculation():
     """测试电势计算函数"""

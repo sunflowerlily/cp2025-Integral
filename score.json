@@ -1,0 +1,36 @@
+{
+  "score": 50,
+  "max_score": 50,
+  "tests": [
+    {
+      "name": "\u5b9e\u9a8c\u4e00: \u5fb7\u62dc\u70ed\u5bb9",
+      "status": "\u901a\u8fc7",
+      "points": 10,
+      "max_points": 10
+    },
+    {
+      "name": "\u5b9e\u9a8c\u4e8c: \u4f3d\u9a6c\u51fd\u6570\u79ef\u5206",
+      "status": "\u901a\u8fc7",
+      "points": 10,
+      "max_points": 10
+    },
+    {
+      "name": "\u5b9e\u9a8c\u4e09: \u5e26\u7535\u5706\u73af\u7535\u52bf",
+      "status": "\u901a\u8fc7",
+      "points": 10,
+      "max_points": 10
+    },
+    {
+      "name": "\u5b9e\u9a8c\u56db: \u4ea5\u59c6\u970d\u5179\u7ebf\u5708",
+      "status": "\u901a\u8fc7",
+      "points": 10,
+      "max_points": 10
+    },
+    {
+      "name": "\u5b9e\u9a8c\u4e94: \u5747\u5300\u8584\u7247\u5f15\u529b",
+      "status": "\u901a\u8fc7",
+      "points": 10,
+      "max_points": 10
+    }
+  ]
+}
