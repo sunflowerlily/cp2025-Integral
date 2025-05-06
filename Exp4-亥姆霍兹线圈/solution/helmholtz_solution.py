@@ -120,15 +120,15 @@ class HelmholtzCoil:
         plt.figure(figsize=(12, 8))
         levels = np.linspace(0, B_magnitude.max(), 20)
         plt.contourf(Z/self.radius, R/self.radius, B_magnitude*1e6, levels=levels)
-        plt.colorbar(label='磁感应强度 (μT)')
+        plt.colorbar(label='Magnetic Field Strength (μT)')
         
-        # 绘制线圈位置
+        # Plot coil positions
         plt.plot([self.z1/self.radius, self.z1/self.radius], [0, 1], 'r-', linewidth=2)
         plt.plot([self.z2/self.radius, self.z2/self.radius], [0, 1], 'r-', linewidth=2)
         
         plt.xlabel('z/R')
         plt.ylabel('r/R')
-        plt.title('亥姆霍兹线圈磁场强度分布')
+        plt.title('Helmholtz Coil Magnetic Field Distribution')
         plt.grid(True)
         plt.show()
     
@@ -157,7 +157,7 @@ class HelmholtzCoil:
         
         plt.xlabel('z/R')
         plt.ylabel('r/R')
-        plt.title('亥姆霍兹线圈磁力线分布')
+        plt.title('Helmholtz Coil Magnetic Field Lines')
         plt.grid(True)
         plt.show()
     
@@ -187,13 +187,13 @@ class HelmholtzCoil:
         
         plt.xlabel('z/R')
         plt.ylabel('r/R')
-        plt.title('中心区域磁场均匀性分析')
+        plt.title('Magnetic Field Uniformity Analysis in Central Region')
         plt.grid(True)
         plt.show()
         
-        # 输出最大偏差
+        # Output maximum deviation
         max_dev = deviation.max()
-        print(f"中心区域内的最大磁场偏差：{max_dev:.2f}%")
+        print(f"Maximum magnetic field deviation in central region: {max_dev:.2f}%")
 
 def test_coil():
     """测试亥姆霍兹线圈的磁场计算"""

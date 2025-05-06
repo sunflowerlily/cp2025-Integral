@@ -108,15 +108,15 @@ def plot_potential_contour():
     # 绘制等势线
     plt.figure(figsize=(10, 8))
     plt.contour(X, Z, V, levels=20)
-    plt.colorbar(label='电势 (V)')
+    plt.colorbar(label='Potential (V)')
     
-    # 绘制圆环位置
+    # Plot ring position
     theta = np.linspace(0, 2*np.pi, 100)
     plt.plot(a*np.cos(theta), np.zeros_like(theta), 'r.')
     
     plt.xlabel('x (m)')
     plt.ylabel('z (m)')
-    plt.title('带电圆环的等势线(y=0平面)')
+    plt.title('Equipotential Lines of Charged Ring (y=0 plane)')
     plt.axis('equal')
     plt.grid(True)
     plt.show()
@@ -150,7 +150,7 @@ def plot_field_lines():
     
     plt.xlabel('x (m)')
     plt.ylabel('z (m)')
-    plt.title('带电圆环的电场分布(y=0平面)')
+    plt.title('Electric Field Distribution of Charged Ring (y=0 plane)')
     plt.axis('equal')
     plt.grid(True)
     plt.show()
@@ -188,7 +188,7 @@ def plot_3d_potential():
     ax.set_xlabel('x (m)')
     ax.set_ylabel('y (m)')
     ax.set_zlabel('z (m)')
-    ax.set_title('带电圆环的三维等势面')
+    ax.set_title('3D Equipotential Surfaces of Charged Ring')
     plt.show()
 
 def test_symmetry():

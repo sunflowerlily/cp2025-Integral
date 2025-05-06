@@ -22,22 +22,13 @@ def integrand(x):
     返回：
     float 或 numpy.ndarray：被积函数的值
     """
-    # 对于小的x值，使用泰勒展开避免数值不稳定
+    # 对于数组输入，逐个计算每个元素
     if isinstance(x, np.ndarray):
-        result = np.zeros_like(x, dtype=float)
-        small_x = x < 0.01
-        # 小x使用泰勒展开：x^4 * e^x / (e^x - 1)^2 ≈ 1 - x/2 + x^2/12 + ...
-        result[small_x] = x[small_x]**4
-        # 其他情况直接计算
-        normal_x = ~small_x
-        exp_x = np.exp(x[normal_x])
-        result[normal_x] = x[normal_x]**4 * exp_x / (exp_x - 1)**2
-        return result
-    else:
-        if x < 0.01:
-            return x**4
-        exp_x = np.exp(x)
-        return x**4 * exp_x / (exp_x - 1)**2
+        return np.array([integrand(xi) for xi in x])
+    
+    # 对于单个值的计算
+    exp_x = np.exp(x)
+    return x**4 * exp_x / (exp_x - 1)**2
 
 def gauss_quadrature(f, a, b, n):
     """实现高斯-勒让德积分
@@ -96,8 +87,8 @@ def plot_cv():
     - 图例
     - 标题
     """
-    # 生成温度点（使用对数间距以更好地显示低温行为）
-    T = np.logspace(np.log10(5), np.log10(500), 200)
+    # 生成温度点（使用线性间距）
+    T = np.linspace(5, 500, 200)
     
     # 计算对应的热容值
     C_V = np.array([cv(t) for t in T])
@@ -106,27 +97,23 @@ def plot_cv():
     plt.figure(figsize=(10, 6))
     
     # 绘制热容曲线
-    plt.plot(T, C_V, 'b-', label='德拜模型')
+    plt.plot(T, C_V, 'b-', label='Debye Model')
     
     # 添加参考线
     # 低温T^3行为
-    T_low = np.logspace(np.log10(5), np.log10(50), 50)
+    T_low = np.linspace(5, 50, 50)
     C_low = cv(50) * (T_low/50)**3
-    plt.plot(T_low, C_low, 'r--', label='T³定律')
+    plt.plot(T_low, C_low, 'r--', label='T³ Law')
     
-    # 设置坐标轴为对数刻度
-    plt.xscale('log')
-    plt.yscale('log')
+    # Add labels and title
+    plt.xlabel('Temperature (K)')
+    plt.ylabel('Heat Capacity (J/K)')
+    plt.title('Solid Heat Capacity vs Temperature (Debye Model)')
     
-    # 添加标签和标题
-    plt.xlabel('温度 (K)')
-    plt.ylabel('热容 (J/K)')
-    plt.title('固体热容随温度的变化（德拜模型）')
-    
-    # 添加网格
+    # Add grid
     plt.grid(True, which='both', ls='-', alpha=0.2)
     
-    # 添加图例
+    # Add legend
     plt.legend()
     
     # 显示图表

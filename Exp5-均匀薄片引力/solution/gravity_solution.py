@@ -126,7 +126,7 @@ class GravityPlate:
         
         plt.xlabel('x (m)')
         plt.ylabel('y (m)')
-        plt.title(f'高度z={z}m处的引力场分布')
+        plt.title(f'Gravitational Field Distribution at Height z={z}m')
         plt.axis('equal')
         plt.grid(True)
         plt.show()
@@ -146,9 +146,9 @@ class GravityPlate:
         plt.loglog(z, F, 'b-', label='数值计算')
         plt.loglog(z, F_point, 'r--', label='点质量近似')
         
-        plt.xlabel('高度 (m)')
-        plt.ylabel('引力 (N)')
-        plt.title('引力随高度的变化关系')
+        plt.xlabel('Height (m)')
+        plt.ylabel('Gravitational Force (N)')
+        plt.title('Gravitational Force vs Height')
         plt.legend()
         plt.grid(True)
         plt.show()
@@ -166,9 +166,9 @@ class GravityPlate:
         plt.figure(figsize=(10, 6))
         plt.loglog(n_points[:-1], errors, 'bo-')
         
-        plt.xlabel('高斯点数')
-        plt.ylabel('相邻阶数结果的差异')
-        plt.title('数值计算精度分析')
+        plt.xlabel('Number of Gauss Points')
+        plt.ylabel('Difference between Adjacent Orders')
+        plt.title('Numerical Calculation Accuracy Analysis')
         plt.grid(True)
         plt.show()
         
