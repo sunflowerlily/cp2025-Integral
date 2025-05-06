@@ -102,5 +102,42 @@ def test_symmetry_properties(plate):
     assert abs(forces[0,1] - forces[2,1]) < 1e-10
     assert abs(forces[1,0] - forces[1,2]) < 1e-10
 
+import numpy as np
+import pytest
+from gravity import GravityPlate
+
+@pytest.fixture
+def plate():
+    """创建一个测试用的均匀薄片实例"""
+    return GravityPlate(length=1.0, width=1.0, density=1.0)
+
+def test_gravity_element(plate):
+    """测试单个面元的引力计算"""
+    # 在高度1m处的引力
+    g = plate.gravity_element(0, 0, 1.0)
+    expected = plate.G * plate.density / 1.0**2
+    assert abs(g - expected) < 1e-10
+
+def test_total_gravity(plate):
+    """测试总引力的计算"""
+    # 在远处应该近似为点质量引力
+    z = 10.0  # 远离薄片
+    g = plate.total_gravity(z)
+    m = plate.density * plate.length * plate.width
+    expected = plate.G * m / z**2
+    assert abs(g/expected - 1) < 0.01
+    
+    # 测试不同高斯点数的收敛性
+    g1 = plate.total_gravity(1.0, n_points=10)
+    g2 = plate.total_gravity(1.0, n_points=20)
+    assert abs(g1/g2 - 1) < 0.01
+
+def test_plot_functions(plate, monkeypatch):
+    """测试绘图函数（不实际显示）"""
+    monkeypatch.setattr(plt, 'show', lambda: None)
+    plate.plot_gravity_field()
+    plate.plot_gravity_height()
+    plate.analyze_accuracy()
+
 if __name__ == '__main__':
     pytest.main([__file__])
