@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-# from scipy.integrate import quad # 可以引入 quad 用于单点精确计算
 
 # --- 常量定义 ---
 a = 1.0  # 圆环半径 (m)
@@ -44,8 +43,8 @@ def calculate_potential_on_grid(y_coords, z_coords):
     dV = C / R
 
     # 对 phi 进行积分 (使用梯形法则)
-    # np.trapz 默认沿最后一个轴积分
-    V = np.trapz(dV, dx=phi_grid[0,0,1]-phi_grid[0,0,0], axis=-1)
+    # np.trapezoid 默认沿最后一个轴积分
+    V = np.trapezoid(dV, dx=phi_grid[0,0,1]-phi_grid[0,0,0], axis=-1)
     return V, y_grid[:,:,0], z_grid[:,:,0] # 返回 V 和对应的 y, z 网格
 
 def calculate_electric_field_on_grid(V, y_coords, z_coords):

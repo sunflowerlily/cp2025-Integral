@@ -1,223 +1,121 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 
 # 物理常数
-G = 6.67430e-11  # 引力常数
+G = 6.67430e-11  # 万有引力常数 (m^3 kg^-1 s^-2)
 
-class GravityPlate:
-    def __init__(self, length, width, density):
-        """初始化均匀薄片
-        
-        参数：
-        length: 薄片长度（米）
-        width: 薄片宽度（米）
-        density: 面密度（kg/m²）
-        """
-        self.length = length
-        self.width = width
-        self.density = density
-        self.G = G
-    
-    def gauss_quadrature(self, f, a, b, n):
-        """实现高斯-勒让德积分
-        
-        参数：
-        f: 被积函数
-        a, b: 积分区间
-        n: 高斯点数
-        
-        返回：
-        float: 积分结果
-        """
-        # 获取高斯点和权重
-        x, w = np.polynomial.legendre.leggauss(n)
-        
-        # 变换到积分区间
-        t = 0.5 * (b - a) * x + 0.5 * (b + a)
-        
-        # 计算积分
-        return 0.5 * (b - a) * np.sum(w * f(t))
-    
-    def gravity_element(self, x, y, z):
-        """计算单个面元对场点的引力
-        
-        参数：
-        x, y: 面元的坐标
-        z: 场点的高度
-        
-        返回：
-        float: 引力大小
-        """
-        r = np.sqrt(x**2 + y**2 + z**2)
-        return self.G * self.density * z / r**3
-    
-    def total_gravity(self, z, n_points=20):
-        """计算高度z处的总引力
-        
-        使用二重高斯积分计算总引力。
-        
-        参数：
-        z: 场点的高度
-        n_points: 每个维度的高斯点数
-        
-        返回：
-        float: 总引力大小
-        """
-        # 定义x方向的被积函数
-        def fx(x):
-            def fy(y):
-                return self.gravity_element(x, y, z)
-            # 对y积分
-            return self.gauss_quadrature(fy, -self.width/2, self.width/2, n_points)
-        
-        # 对x积分
-        return self.gauss_quadrature(fx, -self.length/2, self.length/2, n_points)
-    
-    def gravity_field(self, x, y, z):
-        """计算空间点(x,y,z)处的引力场
-        
-        参数：
-        x, y, z: 场点坐标
-        
-        返回：
-        tuple: (Fx, Fy, Fz) 引力的三个分量
-        """
-        def integrand_x(x_prime):
-            def integrand_y(y_prime):
-                dx = x - x_prime
-                dy = y - y_prime
-                r = np.sqrt(dx**2 + dy**2 + z**2)
-                return self.G * self.density / r**3 * np.array([dx, dy, z])
-            return self.gauss_quadrature(integrand_y, -self.width/2, self.width/2, 20)
-        
-        result = self.gauss_quadrature(integrand_x, -self.length/2, self.length/2, 20)
-        return tuple(result)
-    
-    def plot_gravity_field(self):
-        """绘制引力场分布图"""
-        # 创建网格点
-        x = np.linspace(-2*self.length, 2*self.length, 20)
-        y = np.linspace(-2*self.width, 2*self.width, 20)
-        z = self.length  # 固定高度
-        X, Y = np.meshgrid(x, y)
-        
-        # 计算每个点的引力场
-        Fx = np.zeros_like(X)
-        Fy = np.zeros_like(X)
-        Fz = np.zeros_like(X)
-        F_mag = np.zeros_like(X)
-        
-        for i in range(len(x)):
-            for j in range(len(y)):
-                Fx[j,i], Fy[j,i], Fz[j,i] = self.gravity_field(X[j,i], Y[j,i], z)
-                F_mag[j,i] = np.sqrt(Fx[j,i]**2 + Fy[j,i]**2 + Fz[j,i]**2)
-        
-        # 绘制引力场
-        plt.figure(figsize=(12, 8))
-        plt.streamplot(X, Y, Fx, Fy, color=F_mag, cmap='viridis')
-        plt.colorbar(label='引力场强度 (N)')
-        
-        # 绘制薄片位置
-        rect = plt.Rectangle((-self.length/2, -self.width/2),
-                           self.length, self.width,
-                           fill=False, color='r')
-        plt.gca().add_patch(rect)
-        
-        plt.xlabel('x (m)')
-        plt.ylabel('y (m)')
-        plt.title(f'Gravitational Field Distribution at Height z={z}m')
-        plt.axis('equal')
-        plt.grid(True)
-        plt.show()
-    
-    def plot_gravity_height(self):
-        """绘制引力随高度的变化图"""
-        # 计算不同高度的引力
-        z = np.logspace(-2, 2, 100) * self.length
-        F = np.array([self.total_gravity(h) for h in z])
-        
-        # 计算理论极限（远场近似）
-        m = self.density * self.length * self.width
-        F_point = self.G * m / z**2
-        
-        # 绘制结果
-        plt.figure(figsize=(10, 6))
-        plt.loglog(z, F, 'b-', label='数值计算')
-        plt.loglog(z, F_point, 'r--', label='点质量近似')
-        
-        plt.xlabel('Height (m)')
-        plt.ylabel('Gravitational Force (N)')
-        plt.title('Gravitational Force vs Height')
-        plt.legend()
-        plt.grid(True)
-        plt.show()
-    
-    def analyze_accuracy(self):
-        """分析数值计算的精度"""
-        # 测试不同高斯点数的结果
-        n_points = [4, 8, 16, 32, 64]
-        z = self.length  # 选择一个典型高度
-        
-        results = [self.total_gravity(z, n) for n in n_points]
-        errors = np.abs(np.array(results[1:]) - np.array(results[:-1]))
-        
-        # 绘制收敛性分析
-        plt.figure(figsize=(10, 6))
-        plt.loglog(n_points[:-1], errors, 'bo-')
-        
-        plt.xlabel('Number of Gauss Points')
-        plt.ylabel('Difference between Adjacent Orders')
-        plt.title('Numerical Calculation Accuracy Analysis')
-        plt.grid(True)
-        plt.show()
-        
-        # 输出收敛性数据
-        print("\n精度分析：")
-        print("-" * 50)
-        print("高斯点数\t\t计算结果\t\t相对误差")
-        print("-" * 50)
-        
-        for i, n in enumerate(n_points):
-            result = results[i]
-            if i > 0:
-                rel_error = abs(result - results[i-1])/results[i-1]
-                print(f"{n}\t\t\t{result:.6e}\t\t{rel_error:.2e}")
-            else:
-                print(f"{n}\t\t\t{result:.6e}\t\t---")
+def calculate_sigma(length, mass):
+    """计算面密度"""
+    return mass / (length**2)
 
-def test_plate():
-    """测试均匀薄片的引力计算"""
-    # 创建一个均匀薄片实例
-    plate = GravityPlate(length=1.0, width=1.0, density=1.0)
-    
-    # 测试不同高度的引力
-    test_heights = [0.1, 0.5, 1.0, 2.0]
-    
-    print("引力测试：")
-    print("-" * 50)
-    print("高度 (m)\t\t引力 (N)")
-    print("-" * 50)
-    
-    for z in test_heights:
-        F = plate.total_gravity(z)
-        print(f"{z:.1f}\t\t\t{F:.3e}")
+def integrand(x, y, z):
+    """被积函数"""
+    return 1 / (x**2 + y**2 + z**2)**1.5
 
-def main():
-    # 创建薄片实例
-    plate = GravityPlate(length=1.0, width=1.0, density=1.0)
+def gauss_legendre_integral(length, z, n_points=100):
+    """使用高斯-勒让德求积计算二重积分"""
+    # 获取高斯点和权重
+    xi, wi = np.polynomial.legendre.leggauss(n_points)
     
-    # 绘制引力场分布
-    plate.plot_gravity_field()
+    # 变换到积分区间 [-L/2, L/2]
+    x = xi * (length/2)
+    w = wi * (length/2)
     
-    # 绘制引力-高度关系
-    plate.plot_gravity_height()
-    
-    # 分析计算精度
-    plate.analyze_accuracy()
-    
-    # 运行测试
-    test_plate()
+    # 计算二重积分
+    integral = 0.0
+    for i in range(n_points):
+        for j in range(n_points):
+            integral += w[i] * w[j] * integrand(x[i], x[j], z)
+            
+    return integral
 
+def calculate_force(length, mass, z, method='gauss'):
+    """计算z高度处的引力F_z"""
+    sigma = calculate_sigma(length, mass)
+    
+    if method == 'gauss':
+        integral = gauss_legendre_integral(length, z)
+    else:
+        # 可以使用scipy作为备选方案
+        from scipy.integrate import dblquad
+        integral, _ = dblquad(lambda y, x: integrand(x, y, z),
+                            -length/2, length/2,
+                            lambda x: -length/2, lambda x: length/2)
+    
+    return G * sigma * z * integral
+
+def plot_force_vs_height(length, mass, z_min=0.1, z_max=10, n_points=100):
+    """Plot gravitational force vs height using both methods"""
+    # Generate height points
+    z_values = np.linspace(z_min, z_max, n_points)
+    
+    # Calculate force using both methods
+    F_gauss = [calculate_force(length, mass, z, method='gauss') for z in z_values]
+    F_scipy = [calculate_force(length, mass, z, method='scipy') for z in z_values]
+    
+    # Plot results
+    plt.figure(figsize=(10, 6))
+    plt.plot(z_values, F_gauss, 'r-', label='Gauss-Legendre')
+    plt.plot(z_values, F_scipy, 'g:', label='Scipy dblquad')
+    
+    # Add theoretical limit line
+    sigma = calculate_sigma(length, mass)
+    plt.axhline(y=2*np.pi*G*sigma, color='r', linestyle=':', 
+               label='z→0 limit (2πGσ)')
+    
+    plt.xlabel('Height z (m)')
+    plt.ylabel('Gravitational Force F_z (N)')
+    plt.title('Comparison of Integration Methods')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+def compare_integration_methods(length, mass, z_values):
+    """Compare Gauss-Legendre and scipy dblquad integration methods"""
+    results = []
+    for z in z_values:
+        # Calculate using both methods
+        gauss_result = calculate_force(length, mass, z, method='gauss')
+        scipy_result = calculate_force(length, mass, z, method='scipy')
+        
+        # Calculate relative difference
+        diff = abs(gauss_result - scipy_result)
+        rel_diff = diff / scipy_result if scipy_result != 0 else 0
+        
+        results.append({
+            'z': z,
+            'gauss': gauss_result,
+            'scipy': scipy_result,
+            'difference': diff,
+            'relative_difference': rel_diff
+        })
+    
+    # Print comparison table
+    print("\nIntegration Method Comparison:")
+    print("-" * 80)
+    print(f"{'z (m)':<10}{'Gauss (N)':<20}{'Scipy (N)':<20}{'Diff':<15}{'Rel Diff':<15}")
+    print("-" * 80)
+    for r in results:
+        print(f"{r['z']:<10.3f}{r['gauss']:<20.6e}{r['scipy']:<20.6e}"
+              f"{r['difference']:<15.6e}{r['relative_difference']:<15.6e}")
+
+# 示例使用
 if __name__ == '__main__':
-    main()
+    # 参数设置 (边长10m，质量1e4kg)
+    length = 10
+    mass = 1e4
+    
+    # 计算并绘制引力曲线
+    plot_force_vs_height(length, mass)
+    
+    # 打印几个关键点的引力值
+    for z in [0.1, 1, 5, 10]:
+        F = calculate_force(length, mass, z)
+        print(f"高度 z = {z:.1f}m 处的引力 F_z = {F:.3e} N")
+    
+    # 测试点
+    test_z = [0.1, 0.5, 1, 2, 5, 10]
+    
+    # 比较积分方法
+    compare_integration_methods(length, mass, test_z)
+    
