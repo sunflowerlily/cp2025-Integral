@@ -7,8 +7,8 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # 导入解决方案实现
-from solution.helmholtz_solution import Helmholtz_coils
-#from helmholtz import Helmholtz_coils
+#from solution.helmholtz_solution import Helmholtz_coils
+from helmholtz import Helmholtz_coils
 
 @pytest.fixture
 def helmholtz_coils():

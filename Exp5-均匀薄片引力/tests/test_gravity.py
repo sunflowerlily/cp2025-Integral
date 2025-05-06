@@ -6,8 +6,8 @@ import os
 # 添加项目根目录到Python路径
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from solution.gravity_solution import calculate_sigma, integrand, gauss_legendre_integral, calculate_force
-#from gravity import calculate_sigma, integrand, gauss_legendre_integral, calculate_force
+#from solution.gravity_solution import calculate_sigma, integrand, gauss_legendre_integral, calculate_force
+from gravity import calculate_sigma, integrand, gauss_legendre_integral, calculate_force
 # 测试参数
 TEST_LENGTH = 10.0  # 薄片边长(m)
 TEST_MASS = 1e4      # 薄片质量(kg)

@@ -11,8 +11,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 # 导入学生的实现 - 更新函数名
-from solution.gamma_solution import integrand_gamma, transformed_integrand_gamma, gamma_function
-#from gamma_function import integrand_gamma, transformed_integrand_gamma, gamma_function
+#from solution.gamma_solution import integrand_gamma, transformed_integrand_gamma, gamma_function
+from gamma_function import integrand_gamma, transformed_integrand_gamma, gamma_function
 
 def test_integrand_gamma():
     """测试原始被积函数的实现"""
